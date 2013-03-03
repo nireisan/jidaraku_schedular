@@ -3,9 +3,85 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <h1><%= title %></h1>
+  <div id="fb-root"></div>
+  <div id="user-info"></div>
+  <p><button id="fb-auth">...</button></p>
+
+<script>
+(function() {
+    // facebookのjsの読み込み
+    var e = document.createElement('script'); e.async = true;
+    e.src = document.location.protocol
+    + '//connect.facebook.net/ja_JP/all.js';
+    document.getElementById('fb-root').appendChild(e);
+
+    // socket.io
+    var socket = io.connect('www12139ui.sakura.ne.jp');
+    // debug
+    socket.on('news', function (data) {
+        console.log(data);
+        socket.emit('my other event', { my: 'data' });
+    });
+
+    socket.on('user_data', function (data) {
+        console.log(data);
+    });
+
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId:'427165787358469',
+            status: true,
+            cookie: true,
+            xfbml: true,
+            oauth: true
+        });
+
+        function updateButton(response) {
+            var button = document.getElementById('fb-auth');
+            var userInfo = document.getElementById('user-info');
+            if (response.authResponse) {
+                //user is already logged in and connected
+                FB.api('/me', function(response) {
+                    userInfo.innerHTML = '<img src="https://graph.facebook.com/'
+                    + response.id + '/picture" style="margin-right:5px" />'
+                    + response.name;
+                    button.innerHTML = 'Logout';
+                    socket.emit('account' , { type: 'facebook', acount_data: response });
+                });
+                button.onclick = function() {
+                    FB.logout(function(response) {
+                        userInfo.innerHTML="";
+                    });
+                };
+            } else {
+                //user is not connected to your app or logged out
+                button.innerHTML = 'Login';
+                button.onclick = function() {
+                    FB.login(function(response) {
+                        if (response.authResponse) {
+                            FB.api('/me', function(response) {
+                                userInfo.innerHTML = 
+                                    '<img src="https://graph.facebook.com/' 
+                                + response.id + '/picture" style="margin-right:5px" />'
+                                + response.name;
+                            });
+                        } else {
+                        //user cancelled login or did not grant authorization
+                        }
+                    }, {scope:'email'});
+                }
+            }
+
+        }
+        // run once with current status and whenever the status changes
+        FB.getLoginStatus(updateButton);
+        FB.Event.subscribe('auth.statusChange', updateButton);
+    };
+})();
+</script>
   </body>
 </html>
