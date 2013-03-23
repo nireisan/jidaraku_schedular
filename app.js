@@ -7,7 +7,8 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , model = require('./model/model');
 
 var app = express();
 
@@ -28,6 +29,8 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
+app.get('/form', routes.form);
+app.post('/create', routes.create);
 app.get('/users', user.list);
 
 var server = http.createServer(app);
@@ -36,17 +39,38 @@ server.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
 
+// socket.io
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+    socket.on('account', function (account) { // 認証データの取得
+        console.log(account);
+        if (typeof account.facebookId !== 'undefined') {
+            var accountId = { facebookId : account.facebookId };
+        }
 
-  // 認証データの取得
-  socket.on('account', function (data) {
-    console.log(data);
-  });
-
-  // ユーザーデータの送信
+        // user._idの取得
+        var User = model.User;
+        User.findOne(accountId, function(err, user){
+            if (err) {
+                console.log(err);
+            } else {
+                // ユーザ情報がないときは新規作成
+                if ( user === null ) {
+                    var newUser = new User(account);
+                    newUser.save(function(err, user){
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log(user._id);
+                            // user._idからそのユーザーが属するイベントの取得
+                        }
+                    });
+                } else {
+                    console.log(user._id);
+                    // user._idからそのユーザーが属するイベントの取得
+                }
+            }
+        });
+    });
+    // ユーザーデータの送信
 });

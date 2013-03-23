@@ -11,6 +11,8 @@
   <div id="user-info"></div>
   <p><button id="fb-auth">...</button></p>
 
+  <p><a href="/form">New Entry</a></p>
+
 <script>
 (function() {
     // facebookのjsの読み込み
@@ -21,15 +23,6 @@
 
     // socket.io
     var socket = io.connect('www12139ui.sakura.ne.jp');
-    // debug
-    socket.on('news', function (data) {
-        console.log(data);
-        socket.emit('my other event', { my: 'data' });
-    });
-
-    socket.on('user_data', function (data) {
-        console.log(data);
-    });
 
     window.fbAsyncInit = function() {
         FB.init({
@@ -41,6 +34,7 @@
         });
 
         function updateButton(response) {
+            console.log('updateButton');
             var button = document.getElementById('fb-auth');
             var userInfo = document.getElementById('user-info');
             if (response.authResponse) {
@@ -50,7 +44,11 @@
                     + response.id + '/picture" style="margin-right:5px" />'
                     + response.name;
                     button.innerHTML = 'Logout';
-                    socket.emit('account' , { type: 'facebook', acount_data: response });
+
+                    socket.emit('account' , {
+                        facebookId : response.id,
+                        name       : response.name
+                    });
                 });
                 button.onclick = function() {
                     FB.logout(function(response) {
@@ -79,7 +77,7 @@
         }
         // run once with current status and whenever the status changes
         FB.getLoginStatus(updateButton);
-        FB.Event.subscribe('auth.statusChange', updateButton);
+        //FB.Event.subscribe('auth.statusChange', updateButton);
     };
 })();
 </script>
