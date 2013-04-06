@@ -58,7 +58,6 @@ exports.detail = function( req, res ) {
     
     // -------- 関数定義 ---------
     
-        /** イベントデータをテンプレートにセットする */
         setEventInfo = function( eventId ) {
         
             // eventIdを指定してmongoDBからイベント情報取得
@@ -68,7 +67,8 @@ exports.detail = function( req, res ) {
             callBackGetEventInfo( eventDetail );
         },
         
-        callBackGetEeventInfo = function( eventInfo ) {
+        /** イベントデータをテンプレートにセットする */
+        callBackGetEventInfo = function( eventInfo ) {
         
             res.render( 'detail', {
                 title: eventInfo.Event.EventName
