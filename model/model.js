@@ -6,14 +6,19 @@ function validator(v) {
 }
 
 var UserShema = new mongoose.Schema({
-    facebookId : { type: String, validate: [validator, "Empty Error"] },
+    FacebookId : { type: String, validate: [validator, "Empty Error"] },
     // twitterId ...
-    name       : { type: String, validate: [validator, "Empty Error"] },
+    Name       : { type: String, validate: [validator, "Empty Error"] },
 });
 
-// var Post = new mongoose.Schema({
-//     UserId   : { type: String, validate: [validator, "Empty Error"] }
-//     Item   : { type: String, validate: [validator, "Empty Error"] }
-//   , created: { type: Date, default: Date.now }
-// });
-exports.User = db.model('user', UserShema);
+var EventShema = new mongoose.Schema({
+    ItemId : { type: Number },
+    ItemName: { type: String, validate: [validator, "Empty Error"] },
+    PosX : { type: Number },
+    CreateUser: { type: String, validate: [validator, "Empty Error"] },
+    Comment: { type: String, validate: [validator, "Empty Error"] },
+    VoteUsers: { type: mongoose.Schema.Types.Mixed }
+});
+
+exports.User  = db.model('user',  UserShema);
+exports.Event = db.model('event', EventShema);
