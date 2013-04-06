@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>自堕落スケジューラ（プロト）</title>
+
+    <!-- 横幅を自動で合わせてくれる -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="./stylesheets/detail.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+</head>
+<body>
+
+<div data-role="page" id="home">
+    
+    <div data-role="header" data-position="fixed">
+        <a href="" data-role="button" data-icon="home" data-iconpos="notext"></a>
+        <h1>ここにタイトル</h1>
+        <a href="" data-role="button" data-icon="grid" data-iconpos="notext"></a>
+    </div>
+    
+    <div data-role="content">
+        
+        <div id="space" class="scrollArea">
+        </div>
+        
+    </div>
+    
+    <div data-role="footer" data-position="fixed" data-theme="c">
+        &nbsp;
+        <a href="" data-role="button" data-icon="plus" data-iconpos="notext" id="addItem"></a>
+        <p></p>
+    </div>
+</div>
+
+<script src="./javascripts/detail.js"></script>
+</body>
+</html>

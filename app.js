@@ -6,6 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
+  , detail = require('./routes/detail').detail
   , http = require('http')
   , path = require('path')
   , model = require('./model/model');
@@ -13,7 +14,7 @@ var express = require('express')
 var app = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 50280);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -32,6 +33,7 @@ app.get('/', routes.index);
 app.get('/form', routes.form);
 app.post('/create', routes.create);
 app.get('/users', user.list);
+app.get('/detail', detail);
 
 var server = http.createServer(app);
 
