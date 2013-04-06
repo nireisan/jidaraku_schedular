@@ -68,7 +68,7 @@ exports.detail = function( req, res ) {
             callBackGetEventInfo( eventDetail );
         },
         
-        callBackGetEeventInfo( eventInfo ) {
+        callBackGetEeventInfo = function( eventInfo ) {
         
             res.render( 'detail', {
                 title: eventInfo.Event.EventName
