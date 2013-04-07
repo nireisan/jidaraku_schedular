@@ -14,18 +14,21 @@
 </head>
 <body>
 
-<div data-role="page" id="home">
+<div data-role="page" id="detail">
     
     <div data-role="header" data-position="fixed">
         <a href="" data-role="button" data-icon="home" data-iconpos="notext"></a>
         <h1><%= title %></h1>
-        <a href="" data-role="button" data-icon="grid" data-iconpos="notext"></a>
+        <a href="#userList" data-role="button" data-icon="grid" data-iconpos="notext" data-rel="dialog" data-transitio="pop"></a>
     </div>
     
     <div data-role="content">
         
-        <div id="space" class="scrollArea">
-        </div>
+       <p>作成者：<%= creater %></p>
+       <p>日にち：<%= date %></p>
+
+       <div id="space" class="scrollArea">
+       </div>
         
     </div>
     
@@ -33,6 +36,17 @@
         &nbsp;
         <a href="" data-role="button" data-icon="plus" data-iconpos="notext" id="addItem"></a>
         <p></p>
+    </div>
+</div>
+
+<div data-role="page" id="userList">
+
+    <div data-role="header">
+        <h1>参加者一覧</h1>
+    </div>
+
+    <div data-role="content">
+        <p>おっすおっす</p>
     </div>
 </div>
 
