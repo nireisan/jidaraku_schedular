@@ -101,9 +101,11 @@
         
         var eventId = jQuery( '#eventId' ).val();
         
-            socket = io.connect( 'http://localhost' );
+            socket = io.connect( 'http://www12139ui.sakura.ne.jp:50280' );
                 
         socket.on( 'connect', function() {
+
+            console.log( 'connect!!!' );
         
             // 接続したらeventIdを投げる
         
