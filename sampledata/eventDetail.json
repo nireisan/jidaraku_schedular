@@ -1,0 +1,53 @@
+{
+    "Event" : {
+        "EventName" : "第三回開発作戦会議！！！",
+        "CreateUser": "nireisan",
+        "StartDate" : "2013/04/07"
+    },
+    "Items" : [
+        {
+            "ItemId"    : 1,
+            "ItemName"  : "アイテムのタイトルなんだぜ☆",
+            "PosX"      : 0,
+            "PosY"      : 3,
+            "SizeX"     : 3,
+            "SizeY"     : 2,
+            "CreateUser": "hkitamur",
+            "Comment"   : "ここは作成者しか更新できないコメント欄だぜ☆",
+            "VoteCount" : 2,
+            "VoteUsers" : [
+                "hkitamur",
+                "shomma"
+            ]
+        },
+        {
+            "ItemId"    : 2,
+            "ItemName"  : "アイテムのタイトルなんだぜ☆",
+            "PosX"      : 0,
+            "PosY"      : 7,
+            "SizeX"     : 3,
+            "SizeY"     : 6,
+            "CreateUser": "hkitamur",
+            "Comment"   : "ここは作成者しか更新できないコメント欄だぜ☆",
+            "VoteCount" : 2,
+            "VoteUsers" : [
+                "hkitamur",
+                "shomma"
+            ]
+        }
+    ],
+    "Participates" : [
+        {
+            "UserId"   : "nireisan",
+            "UserName" : "にれい"
+        },
+        {
+            "UserId"   : "hkitamur",
+            "UserName" : "えの"
+        },
+        {
+            "UserId"   : "shomma",
+            "UserName" : "しんべえ"
+        }
+    ]
+}

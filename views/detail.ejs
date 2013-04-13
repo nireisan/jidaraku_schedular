@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title><%= title %></title>
+
+    <!-- 横幅を自動で合わせてくれる -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="/stylesheets/detail.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.css" />
+    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
+</head>
+<body>
+
+<input type="hidden" id="eventId" value="<%= id %>">
+
+<div data-role="page" id="detail">
+    
+    <div data-role="header" data-position="fixed">
+        <a href="" data-role="button" data-icon="home" data-iconpos="notext"></a>
+        <h1><%= title %></h1>
+        <a href="#userList" data-role="button" data-icon="grid" data-iconpos="notext" data-rel="dialog" data-transitio="pop"></a>
+    </div>
+    
+    <div data-role="content">
+
+       <p>作成者：<%= creater %></p>
+       <p>日にち：<%= date %></p>
+
+       <div id="space" class="scrollArea">
+           
+           <div id="schedule"></div>
+           
+       </div>
+        
+    </div>
+    
+    <div data-role="footer" data-position="fixed" data-theme="c">
+        &nbsp;
+        <a href="" data-role="button" data-icon="plus" data-iconpos="notext" id="addItem"></a>
+        <p></p>
+    </div>
+</div>
+
+<div data-role="page" id="userList">
+
+    <div data-role="header">
+        <h1>参加者一覧</h1>
+    </div>
+
+    <div data-role="content">
+        
+        <ul data-role="listview" id="userListview">
+        </ul>
+        
+    </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/javascripts/jidaraku_socket.js"></script>
+<script src="/javascripts/jidaraku_item_temp.js"></script>
+<script src="/javascripts/detail.js"></script>
+</body>
+</html>

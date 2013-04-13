@@ -8,12 +8,14 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , model = require('./model/model');
+  , model = require('./model/model')
+  
+  , detail = require('./routes/detail').detail;
 
 var app = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 50280);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -32,6 +34,7 @@ app.get('/', routes.index);
 app.get('/form', routes.form);
 app.post('/create', routes.create);
 app.get('/users', user.list);
+app.get('/detail', detail);
 
 var server = http.createServer(app);
 
@@ -40,7 +43,10 @@ server.listen(app.get('port'), function(){
 });
 
 // socket.io
-var io = require('socket.io').listen(server);
+var io = require('socket.io').listen(server),
+
+    fs = require( 'fs' );
+
 io.sockets.on('connection', function (socket) {
      // 認証データの取得
     socket.on('account', function (account) {
@@ -71,6 +77,19 @@ io.sockets.on('connection', function (socket) {
             }
         });
     });
+    // ユーザーデータの送信
+
+    socket.on( 'eventId', function( eventId ) {
+
+        // eventIdをブラウザから送られてきたとき
+        
+        // monngoに格納されているイベント情報を取得する        
+        // とりあえずファイルからサンプルjsonを取得しておく
+        
+        var eventDetail = JSON.parse( fs.readFileSync( './sampledata/eventDetail.json' ) );
+        
+        socket.emit( 'eventDetail', eventDetail );
+    } );
 
     // アイテムの追加
     socket.on('addItem', function (item) {
