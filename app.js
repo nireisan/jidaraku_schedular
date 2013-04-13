@@ -8,14 +8,13 @@ var express = require('express')
   , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , model = require('./model/model')
   , detail = require('./routes/detail').detail
   , events = require('./routes/events').events;
 
 var app = module.exports = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3011);
+  app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -58,28 +57,31 @@ io.sockets.on('connection', function (socket) {
             var accountId = { FacebookId : account.FacebookId };
         }
 
-        // user._idの取得
-        var User = model.User;
-        User.findOne(accountId, function(err, user){
-            if (err) {
-                console.log(err);
-            } else {
-                // ユーザ情報がないときは新規作成
-                // if ( user === null ) {
-                if (true) {
-                    var newUser = new User(account);
-                    newUser.save(function(err, user){
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            // user._idからそのユーザーが属するイベントの取得
-                        }
-                    });
-                } else {
-                    // user._idからそのユーザーが属するイベントの取得
-                }
-            }
-        });
+        // // user._idの取得
+        // var User = model.User;
+        // User.findOne(accountId, function(err, user){
+        //     if (err) {
+        //         console.log(err);
+        //     } else {
+        //         // ユーザ情報がないときは新規作成
+        //         // if ( user === null ) {
+        //         if (true) {
+        //             var newUser = new User(account);
+        //             newUser.save(function(err, user){
+        //                 if (err) {
+        //                     console.log(err);
+        //                 } else {
+        //                     // user._idからそのユーザーが属するイベントの取得
+        //                 }
+        //             });
+        //         } else {
+        //             // user._idからそのユーザーが属するイベントの取得
+        //         }
+        //     }
+        // });
+        //console.log(lib.getUserId(account, accountId));
+       var eventId = '51691a9cf940a94ee632dbeb';
+       lib.getEventDetail(eventId);
     });
     // ユーザーデータの送信
 
@@ -96,6 +98,7 @@ io.sockets.on('connection', function (socket) {
             }
         });
         // broadcastでアイテムの追加情報の送信
+        socket.emitAll( 'resAllEventDetail', eventDetail );
     });
 
 
