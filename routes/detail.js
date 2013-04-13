@@ -18,6 +18,7 @@ exports.detail = function( req, res ) {
             
             // 本来はコールバック内で実行する
             res.render( 'detail', {
+                id      : eventId,
                 title   : eventInfo.EventName,
                 creater : eventInfo.CreateUser,
                 date    : eventInfo.StartDate
