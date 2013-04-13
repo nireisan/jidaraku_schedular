@@ -5,17 +5,15 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
-  , model = require('./model/model')
   , detail = require('./routes/detail').detail
   , events = require('./routes/events').events;
 
 var app = module.exports = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3011);
+  app.set('port', process.env.PORT || 3000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -31,9 +29,6 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
-//app.get('/form', routes.form);
-//app.post('/create', routes.create);
-app.get('/users', user.list);
 app.get('/detail', detail);
 app.get('/events', events);
 
@@ -48,43 +43,15 @@ var io = require('socket.io').listen(server);
 
 app.set( 'io', io );
 
+// トップページのソケットサーバー
+require( './libs/topSocketServer' );
 // 詳細ページのソケットサーバー
 require( './libs/detailSocketServer' );
 
 io.sockets.on('connection', function (socket) {
-    // 認証データの取得
-    socket.on('account', function (account) {
-        if (typeof account.FacebookId !== 'undefined') {
-            var accountId = { FacebookId : account.FacebookId };
-        }
 
-        // user._idの取得
-        var User = model.User;
-        User.findOne(accountId, function(err, user){
-            if (err) {
-                console.log(err);
-            } else {
-                // ユーザ情報がないときは新規作成
-                // if ( user === null ) {
-                if (true) {
-                    var newUser = new User(account);
-                    newUser.save(function(err, user){
-                        if (err) {
-                            console.log(err);
-                        } else {
-                            // user._idからそのユーザーが属するイベントの取得
-                        }
-                    });
-                } else {
-                    // user._idからそのユーザーが属するイベントの取得
-                }
-            }
-        });
-    });
-    // ユーザーデータの送信
-
-    // アイテムの追加
-    socket.on('addItem', function (item) {
+    // アイテムの追加・更新・削除
+    socket.on('reqUpdateItem', function (item) {
         // mongoへ保存。理想はメモリーに持って定期的にDBに保存
         console.log(item);
         var newEvent = new model.Event(item);
@@ -96,6 +63,7 @@ io.sockets.on('connection', function (socket) {
             }
         });
         // broadcastでアイテムの追加情報の送信
+        //socket.emitAll( 'resAllEventDetail', eventDetail );
     });
 
 
