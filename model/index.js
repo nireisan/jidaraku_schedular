@@ -12,12 +12,9 @@ var UserShema = new mongoose.Schema({
 });
 
 var EventShema = new mongoose.Schema({
-    ItemId : { type: Number },
-    ItemName: { type: String, validate: [validator, "Empty Error"] },
-    PosX : { type: Number },
-    CreateUser: { type: String, validate: [validator, "Empty Error"] },
-    Comment: { type: String, validate: [validator, "Empty Error"] },
-    VoteUsers: { type: mongoose.Schema.Types.Mixed }
+    Event        : { type : mongoose.Schema.Types.Mixed },
+    Items        : { type : mongoose.Schema.Types.Mixed },
+    Participates : { type : mongoose.Schema.Types.Mixed }
 });
 
 exports.User  = db.model('user',  UserShema);
