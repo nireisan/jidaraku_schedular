@@ -12,7 +12,7 @@ var express = require('express')
   , detail = require('./routes/detail').detail
   , events = require('./routes/events').events;
 
-var app = express();
+var app = module.exports = express();
 
 app.configure(function(){
   app.set('port', process.env.PORT || 3011);
@@ -44,12 +44,15 @@ server.listen(app.get('port'), function(){
 });
 
 // socket.io
-var io = require('socket.io').listen(server),
+var io = require('socket.io').listen(server);
 
-    fs = require( 'fs' );
+app.set( 'io', io );
+
+// 詳細ページのソケットサーバー
+require( './libs/detailSocketServer' );
 
 io.sockets.on('connection', function (socket) {
-     // 認証データの取得
+    // 認証データの取得
     socket.on('account', function (account) {
         if (typeof account.FacebookId !== 'undefined') {
             var accountId = { FacebookId : account.FacebookId };
@@ -79,18 +82,6 @@ io.sockets.on('connection', function (socket) {
         });
     });
     // ユーザーデータの送信
-
-    socket.on( 'eventId', function( eventId ) {
-
-        // eventIdをブラウザから送られてきたとき
-        
-        // monngoに格納されているイベント情報を取得する        
-        // とりあえずファイルからサンプルjsonを取得しておく
-        
-        var eventDetail = JSON.parse( fs.readFileSync( './sampledata/eventDetail.json' ) );
-        
-        socket.emit( 'eventDetail', eventDetail );
-    } );
 
     // アイテムの追加
     socket.on('addItem', function (item) {
