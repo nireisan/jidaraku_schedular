@@ -22,7 +22,7 @@
     document.getElementById('fb-root').appendChild(e);
 
     // socket.io
-    var socket = io.connect('www12139ui.sakura.ne.jp');
+    var socket = io.connect('www12139ui.sakura.ne.jp/top');
 
     window.fbAsyncInit = function() {
         FB.init({
@@ -45,7 +45,8 @@
                     + response.name;
                     button.innerHTML = 'Logout';
 
-                    socket.emit('account' , {
+                    //socket.emit('account' , {
+                    socket.emit('reqEventList', {
                         FacebookId : response.id,
                         Name       : response.name
                     });
@@ -93,6 +94,10 @@
         ]
     };
     socket.emit('addItem', item);
+
+    socket.on('resEventList', function( eventList) {
+        console.log(eventList);
+    });
 
 })();
 </script>

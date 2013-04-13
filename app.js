@@ -47,46 +47,26 @@ var io = require('socket.io').listen(server);
 
 app.set( 'io', io );
 
+// トップページのソケットサーバー
+require( './libs/topSocketServer' );
 // 詳細ページのソケットサーバー
 require( './libs/detailSocketServer' );
 
 io.sockets.on('connection', function (socket) {
-    // 認証データの取得
-    socket.on('account', function (account) {
-        if (typeof account.FacebookId !== 'undefined') {
-            var accountId = { FacebookId : account.FacebookId };
-        }
+    socket.on( 'reqEventDetail', function( eventId ) {
 
-        // // user._idの取得
-        // var User = model.User;
-        // User.findOne(accountId, function(err, user){
-        //     if (err) {
-        //         console.log(err);
-        //     } else {
-        //         // ユーザ情報がないときは新規作成
-        //         // if ( user === null ) {
-        //         if (true) {
-        //             var newUser = new User(account);
-        //             newUser.save(function(err, user){
-        //                 if (err) {
-        //                     console.log(err);
-        //                 } else {
-        //                     // user._idからそのユーザーが属するイベントの取得
-        //                 }
-        //             });
-        //         } else {
-        //             // user._idからそのユーザーが属するイベントの取得
-        //         }
-        //     }
-        // });
-        //console.log(lib.getUserId(account, accountId));
-       var eventId = '51691a9cf940a94ee632dbeb';
-       lib.getEventDetail(eventId);
-    });
-    // ユーザーデータの送信
+        // eventIdをブラウザから送られてきたとき
 
-    // アイテムの追加
-    socket.on('addItem', function (item) {
+        // monngoに格納されているイベント情報を取得する
+        // とりあえずファイルからサンプルjsonを取得しておく
+
+        var eventDetail = JSON.parse( fs.readFileSync( './sampledata/eventDetail.json' ) );
+
+        socket.emit( 'resEventDetail', eventDetail );
+    } );
+
+    // アイテムの追加・更新・削除
+    socket.on('reqUpdateItem', function (item) {
         // mongoへ保存。理想はメモリーに持って定期的にDBに保存
         console.log(item);
         var newEvent = new model.Event(item);
