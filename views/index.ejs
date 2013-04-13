@@ -46,8 +46,8 @@
                     button.innerHTML = 'Logout';
 
                     socket.emit('account' , {
-                        facebookId : response.id,
-                        name       : response.name
+                        FacebookId : response.id,
+                        Name       : response.name
                     });
                 });
                 button.onclick = function() {
@@ -79,6 +79,21 @@
         FB.getLoginStatus(updateButton);
         //FB.Event.subscribe('auth.statusChange', updateButton);
     };
+    // トップでは呼び出さないがテストのためおいた
+    // itemの項目は適当
+    var item = {
+        "ItemId"    : 1,
+        "ItemName"  : "アイテムのタイトルなんだぜ☆",
+        "PosX"      : 123456,
+        "CreateUser": "hkitamur",
+        "Comment"   : "ここは作成者しか更新できないコメント欄だぜ☆",
+        "VoteUsers" : [
+            "hkitamur",
+            "shomma"
+        ]
+    };
+    socket.emit('addItem', item);
+
 })();
 </script>
   </body>

@@ -48,13 +48,10 @@ var io = require('socket.io').listen(server),
     fs = require( 'fs' );
 
 io.sockets.on('connection', function (socket) {
-
-    // console.log( 'aaaaaaaaaa' );
-
-    socket.on('account', function (account) { // 認証データの取得
-        console.log(account);
-        if (typeof account.facebookId !== 'undefined') {
-            var accountId = { facebookId : account.facebookId };
+     // 認証データの取得
+    socket.on('account', function (account) {
+        if (typeof account.FacebookId !== 'undefined') {
+            var accountId = { FacebookId : account.FacebookId };
         }
 
         // user._idの取得
@@ -64,18 +61,17 @@ io.sockets.on('connection', function (socket) {
                 console.log(err);
             } else {
                 // ユーザ情報がないときは新規作成
-                if ( user === null ) {
+                // if ( user === null ) {
+                if (true) {
                     var newUser = new User(account);
                     newUser.save(function(err, user){
                         if (err) {
                             console.log(err);
                         } else {
-                            console.log(user._id);
                             // user._idからそのユーザーが属するイベントの取得
                         }
                     });
                 } else {
-                    console.log(user._id);
                     // user._idからそのユーザーが属するイベントの取得
                 }
             }
@@ -94,4 +90,19 @@ io.sockets.on('connection', function (socket) {
         
         socket.emit( 'eventDetail', eventDetail );
     } );
+
+    // アイテムの追加
+    socket.on('addItem', function (item) {
+        // mongoへ保存。理想はメモリーに持って定期的にDBに保存
+        console.log(item);
+        var newEvent = new model.Event(item);
+        newEvent.save(function(err, event) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(event);
+            }
+        });
+        // broadcastでアイテムの追加情報の送信
+    });
 });
