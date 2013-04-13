@@ -11,14 +11,6 @@ var UserShema = new mongoose.Schema({
     Name       : { type: String, validate: [validator, "Empty Error"] },
 });
 
-// var EventShema = new mongoose.Schema({
-//     ItemId : { type: Number },
-//     ItemName: { type: String, validate: [validator, "Empty Error"] },
-//     PosX : { type: Number },
-//     CreateUser: { type: String, validate: [validator, "Empty Error"] },
-//     Comment: { type: String, validate: [validator, "Empty Error"] },
-//     VoteUsers: { type: mongoose.Schema.Types.Mixed }
-// });
 var EventShema = new mongoose.Schema({
     Event        : { type : mongoose.Schema.Types.Mixed },
     Items        : { type : mongoose.Schema.Types.Mixed },

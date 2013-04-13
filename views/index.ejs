@@ -45,7 +45,6 @@
                     + response.name;
                     button.innerHTML = 'Logout';
 
-                    //socket.emit('account' , {
                     socket.emit('reqEventList', {
                         FacebookId : response.id,
                         Name       : response.name

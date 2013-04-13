@@ -5,7 +5,6 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
   , http = require('http')
   , path = require('path')
   , detail = require('./routes/detail').detail
@@ -30,9 +29,6 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
-//app.get('/form', routes.form);
-//app.post('/create', routes.create);
-app.get('/users', user.list);
 app.get('/detail', detail);
 app.get('/events', events);
 
@@ -53,17 +49,6 @@ require( './libs/topSocketServer' );
 require( './libs/detailSocketServer' );
 
 io.sockets.on('connection', function (socket) {
-    socket.on( 'reqEventDetail', function( eventId ) {
-
-        // eventIdをブラウザから送られてきたとき
-
-        // monngoに格納されているイベント情報を取得する
-        // とりあえずファイルからサンプルjsonを取得しておく
-
-        var eventDetail = JSON.parse( fs.readFileSync( './sampledata/eventDetail.json' ) );
-
-        socket.emit( 'resEventDetail', eventDetail );
-    } );
 
     // アイテムの追加・更新・削除
     socket.on('reqUpdateItem', function (item) {
@@ -78,7 +63,7 @@ io.sockets.on('connection', function (socket) {
             }
         });
         // broadcastでアイテムの追加情報の送信
-        socket.emitAll( 'resAllEventDetail', eventDetail );
+        //socket.emitAll( 'resAllEventDetail', eventDetail );
     });
 
 
