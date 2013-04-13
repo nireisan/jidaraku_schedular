@@ -47,9 +47,9 @@ var io = require('socket.io').listen(server);
 
 app.set( 'io', io );
 
+// 詳細ページのソケットサーバー
 require( './libs/detailSocketServer' );
 
-/*
 io.sockets.on('connection', function (socket) {
     // 認証データの取得
     socket.on('account', function (account) {
@@ -97,4 +97,3 @@ io.sockets.on('connection', function (socket) {
         // broadcastでアイテムの追加情報の送信
     });
 });
-*/
