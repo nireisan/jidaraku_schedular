@@ -9,13 +9,13 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , model = require('./model/model')
-  
-  , detail = require('./routes/detail').detail;
+  , detail = require('./routes/detail').detail
+  , events = require('./routes/events').events;
 
 var app = module.exports = express();
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 50280);
+  app.set('port', process.env.PORT || 3011);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.use(express.favicon());
@@ -31,10 +31,11 @@ app.configure('development', function(){
 });
 
 app.get('/', routes.index);
-app.get('/form', routes.form);
-app.post('/create', routes.create);
+//app.get('/form', routes.form);
+//app.post('/create', routes.create);
 app.get('/users', user.list);
 app.get('/detail', detail);
+app.get('/events', events);
 
 var server = http.createServer(app);
 
@@ -95,5 +96,32 @@ io.sockets.on('connection', function (socket) {
             }
         });
         // broadcastでアイテムの追加情報の送信
+    });
+
+
+    socket.on('reqEventList', function(){
+        var resEventList =
+            { "events" : [
+                    {
+                        "EventId"   : 1,    // ページのurlにも使う、Eventsの中でユニーク
+                        "EventName" : "第三回開発作戦会議！！！",
+                        "CreateUser": "nireisan",
+                        "StartDate" : 1111111,    // 開始日の０時０分０秒０ミリ秒のタイムスタンプ
+                        "EndDate"   : 1112222,    // 終了日の０時０分０秒０ミリ秒のタイムスタンプ
+                        "Created"   : 1010101,    // 作成日時のタイムスタンプ（ミリ秒まで）
+                        "Updated"   : 1010102     // 更新日時のタイムスタンプ（ミリ秒まで）
+                    },
+                    {
+                        "EventId"   : 2,    // ページのurlにも使う、Eventsの中でユニーク
+                        "EventName" : "たまりば",
+                        "CreateUser": "nireisan",
+                        "StartDate" : 1111111,    // 開始日の０時０分０秒０ミリ秒のタイムスタンプ
+                        "EndDate"   : 1112222,    // 終了日の０時０分０秒０ミリ秒のタイムスタンプ
+                        "Created"   : 1010101,    // 作成日時のタイムスタンプ（ミリ秒まで）
+                        "Updated"   : 1010102     // 更新日時のタイムスタンプ（ミリ秒まで）
+                    }
+                ]
+            };
+        socket.emit('resEventList', resEventList);
     });
 });
