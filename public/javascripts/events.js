@@ -1,5 +1,5 @@
 (function(){
-    var socket = io.connect('http://www12139ui.sakura.ne.jp:3011');
+    var socket = io.connect('http://www12139ui.sakura.ne.jp');
     var userId = $('#userId').val();
 
     // init
@@ -29,3 +29,19 @@
     });
 
 })();
+
+function AppViewModel() {
+    this.eventName = ko.observable("");
+    this.date = ko.observable("");
+    this.comment = ko.observable("");
+
+    // イベント作成
+    this.createEvent = function() {
+        var event = $('<li>').html(this.eventName());
+        $('#eventList').prepend(event);
+        $("#eventList").listview('refresh');
+    };
+}
+// Activates knockout.js
+ko.applyBindings(new AppViewModel());
+
