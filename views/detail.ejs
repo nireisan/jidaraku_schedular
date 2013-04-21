@@ -26,73 +26,24 @@
     
     <div data-role="content">
 
-       <p>作成者：<%= creater %></p>
-       <p>日にち：<%= date %></p>
+        <p>作成者：<%= creater %></p>
+        <p>日にち：<%= date %></p>
 
-       <!--<div id="space" class="scrollArea">-->
-       <div id="space" class="scrollArea">
-           
-           <!-- いったんリストビューで作る
-           <div id="schedule"></div>
-           -->
+        <br />
 
-           <ul data-role="listview" data-theme="g">
-              <li><a id="h0m0">BMW</a></li>
-              <li><a id="h0m1">BMW</a></li>
-              <li><a id="h1m0">BMW</a></li>
-              <li><a id="h1m1">BMW</a></li>
-              <li><a id="h2m0">BMW</a></li>
-              <li><a id="h2m1">BMW</a></li>
-              <li><a id="h3m0">BMW</a></li>
-              <li><a id="h3m1">BMW</a></li>
-              <li><a id="h4m0">BMW</a></li>
-              <li><a id="h4m1">BMW</a></li>
-              <li><a id="h5m0">BMW</a></li>
-              <li><a id="h5m1">BMW</a></li>
-              <li><a id="h6m0">BMW</a></li>
-              <li><a id="h6m1">BMW</a></li>
-              <li><a id="h7m0">BMW</a></li>
-              <li><a id="h7m1">BMW</a></li>
-              <li><a id="h8m0">BMW</a></li>
-              <li><a id="h8m1">BMW</a></li>
-              <li><a id="h9m0">BMW</a></li>
-              <li><a id="h9m1">BMW</a></li>
-              <li><a id="h10m0">BMW</a></li>
-              <li><a id="h10m1">BMW</a></li>
-              <li><a id="h11m0">BMW</a></li>
-              <li><a id="h11m1">BMW</a></li>
-              <li><a id="h12m0">BMW</a></li>
-              <li><a id="h12m1">BMW</a></li>
-              <li><a id="h13m0">BMW</a></li>
-              <li><a id="h13m1">BMW</a></li>
-              <li><a id="h14m0">BMW</a></li>
-              <li><a id="h14m1">BMW</a></li>
-              <li><a id="h15m0">BMW</a></li>
-              <li><a id="h15m1">BMW</a></li>
-              <li><a id="h16m0">BMW</a></li>
-              <li><a id="h16m1">BMW</a></li>
-              <li><a id="h17m0">BMW</a></li>
-              <li><a id="h17m1">BMW</a></li>
-              <li><a id="h18m0">BMW</a></li>
-              <li><a id="h18m1">BMW</a></li>
-              <li><a id="h19m0">BMW</a></li>
-              <li><a id="h19m1">BMW</a></li>
-              <li><a id="h20m0">BMW</a></li>
-              <li><a id="h20m1">BMW</a></li>
-              <li><a id="h21m0">BMW</a></li>
-              <li><a id="h21m1">BMW</a></li>
-              <li><a id="h21m0">BMW</a></li>
-              <li><a id="h21m1">BMW</a></li>
-              <li><a id="h22m0">BMW</a></li>
-              <li><a id="h22m1">BMW</a></li>
-              <li><a id="h23m0">BMW</a></li>
-              <li><a id="h23m1">BMW</a></li>
-           </ul>
+        <!--<div id="space" class="scrollArea">-->
            
-       </div>
-        
-    </div>
+            <!-- いったんリストビューで作る
+            <div id="schedule"></div>
+            -->
+
+        <!--</div>-->
     
+        <ul data-role="listview" id="timeschedule">
+        </ul>
+           
+    </div>
+        
     <div data-role="footer" data-position="fixed" data-theme="c">
         &nbsp;
         <a href="" data-role="button" data-icon="plus" data-iconpos="notext" id="addItem"></a>
