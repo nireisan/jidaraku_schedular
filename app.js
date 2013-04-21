@@ -44,7 +44,7 @@ var io = require('socket.io').listen(server);
 app.set( 'io', io );
 
 // トップページのソケットサーバー
-require( './libs/topSocketServer' );
+require( './libs/indexSocketServer' );
 // 詳細ページのソケットサーバー
 require( './libs/detailSocketServer' );
 
