@@ -34,17 +34,22 @@ exports.getUserInfo = function (account, callback) {
 };
 
 /**
- * @function getEvenList
+ * @function getEvenList ユーザーが参加しているイベント一覧を返す
  * @param userId ユーザーID
  * @param conditon 絞り込みやソート（未実装）
  * @param callback コールバック関数
  */
 exports.getEventList = function (userId, condition, callback) {
-    Event.find({ "Participates.UserId" : userId}, function(err, eventList){
+    Event.find({ "Participates.UserId" : userId}, { _id : 1, Event : 1}, function(err, eventListDB){
             if (err) {
                 console.log(err);
                 return false;
             } else {
+                var eventList = [];
+                eventListDB.forEach(function (val, idx, arr){
+                    // _idをstring型に変更する
+                    eventList[idx] = { _id: ''+val._id, Event: val.Event};
+                });
                 callback(eventList);
             }
         }

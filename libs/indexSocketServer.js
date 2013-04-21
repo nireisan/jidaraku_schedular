@@ -11,7 +11,7 @@ io.of( '/top' ).on( 'connection', function ( socket ) {
             // 文字列にキャスト
             var userId = '' + user._id;
             database.getEventList(userId, null, function(eventList) {
-               socket.emit( 'resEventList', eventList);
+                socket.emit( 'resEventList', eventList);
             });
         });
     });
