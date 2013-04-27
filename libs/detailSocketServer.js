@@ -1,8 +1,10 @@
 var fs = require( 'fs' ),
 
     app = module.parent.exports,
-    
-    io = app.get( 'io' );
+
+    io = app.get( 'io' ),
+
+    database = require('./database');
 
 io.of( '/detail' ).on( 'connection', function ( socket ) {
 
@@ -10,13 +12,14 @@ io.of( '/detail' ).on( 'connection', function ( socket ) {
 
     socket.on( 'reqEventDetail', function( eventId ) {
 
-        // eventIdをブラウザから送られてきたとき
+        var eventId = '51698d7731510b11bf91ea09';
+        database.getEventDetail(eventId, function(eventDetail) {
+            console.log(eventDetail);
+            socket.emit( 'resEventList', eventDetail);
+        });
 
-        // monngoに格納されているイベント情報を取得する
-        // 一旦ファイルからサンプルjsonを取得しておく
-
-        var eventDetail = JSON.parse( fs.readFileSync( './sampledata/eventDetail.json' ) );
-
-        socket.emit( 'resEventDetail', eventDetail );
+        // var eventDetail = JSON.parse( fs.readFileSync( './sampledata/eventDetail.json' ) );
+        //
+        // socket.emit( 'resEventDetail', eventDetail );
     } );
 } );
