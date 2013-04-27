@@ -21,24 +21,15 @@
     <div data-role="header" data-position="fixed">
         <a href="" data-role="button" data-icon="home" data-iconpos="notext"></a>
         <h1><%= title %></h1>
-        <a href="#userList" data-role="button" data-icon="grid" data-iconpos="notext" data-rel="dialog" data-transitio="pop"></a>
+        <a href="#userList" data-role="button" data-icon="grid" data-iconpos="notext" data-rel="dialog" data-transition="pop"></a>
     </div>
     
     <div data-role="content">
 
-        <p>作成者：<%= creater %></p>
         <p>日にち：<%= date %></p>
 
         <br />
 
-        <!--<div id="space" class="scrollArea">-->
-           
-            <!-- いったんリストビューで作る
-            <div id="schedule"></div>
-            -->
-
-        <!--</div>-->
-    
         <ul data-role="listview" id="timeschedule">
         </ul>
            
@@ -46,9 +37,39 @@
         
     <div data-role="footer" data-position="fixed" data-theme="c">
         &nbsp;
-        <a href="" data-role="button" data-icon="plus" data-iconpos="notext" id="addItem"></a>
+        <a href="#addItem" data-role="button" data-icon="plus" data-iconpos="notext" data-rel="dialog" data-transition="pop"></a>
         <p></p>
     </div>
+</div>
+
+<div data-role="page" id="addItem">
+
+    <div data-role="header">
+        <h1>アイテムの追加</h1>
+    </div>
+
+    <div data-role="content">
+
+        <div data-role="fieldcontain">
+            <label for="itemTitle">タイトル</label>
+            <input type="text" name="itemTitle" id="itemTitle" />
+        </div>
+        <div data-role="fieldcontain">
+            <label for="itemComment">コメント</label>
+            <input type="text" name="itemComment" id="itemComment" />
+        </div>
+        <div data-role="fieldcontain">
+            <label for="itemStart">開始時間</label>
+            <input type="time" step="1800" name="itemStart" id="itemStart" />
+        </div>
+        <div data-role="fieldcontain">
+            <label for="itemEnd">終了時間</label>
+            <input type="time" step="1800" name="itemEnd" id="itemEnd" />
+        </div>
+
+        <a href="" data-role="button" id="addItemButton">上記内容でアイテムを作る</a>
+    </div>
+
 </div>
 
 <div data-role="page" id="userList">
@@ -67,7 +88,6 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/jidaraku_socket.js"></script>
-<script src="/javascripts/jidaraku_item_temp.js"></script>
 <script src="/javascripts/detail.js"></script>
 </body>
 </html>

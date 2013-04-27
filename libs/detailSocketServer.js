@@ -19,4 +19,29 @@ io.of( '/detail' ).on( 'connection', function ( socket ) {
 
         socket.emit( 'resEventDetail', eventDetail );
     } );
+
+    socket.on( 'reqCreateItem', function( itemInfo ) {
+
+        console.log( itemInfo );
+
+/*
+        var newItem = [{
+                ItemId: itemInfo,
+                ItemName: "new item だにぃ",
+                    PosX: 0,
+                    PosY: 33,
+                    SizeX: 3,
+                    SizeY: 5,
+                    Comment: "あたらしく作ったよー！",
+                    VoteCount: 0,
+                    VoteUsers: [
+                        'hkitamur'
+                    ]
+                }
+            ];
+
+        socket.emit( 'resNewItem', newItem );
+        socket.broadcast.emit( 'resNewItem', newItem );
+*/
+    } );
 } );

@@ -1,9 +1,18 @@
 ( function( jQuery, window, undefined ) {
 
     jQuery( function() {
+
+        // ---------- 変数・定数定義 ---------
     
+        var eventId = jQuery( '#eventId' ).val(),
+
+            socket = io.connect( 'http://www12139ui.sakura.ne.jp:50280/detail' ),
+                
+        // --------- 関数定義 ---------
+
             /** 参加者リストの作成 */
-        var mkParticipateList = function( userList ) {
+            // {{{ mkParticipateList = function( userList )
+            mkParticipateList = function( userList ) {
                 
                 var length = userList.length;
                 
@@ -14,9 +23,11 @@
                     jQuery( '#userListview' ).append( li );
                 }
             },
+            // }}}
             
             /** アイテムリストの作成 */
             /** タイムスケジュールのリストを生成する(プロト用) */
+            // {{{ mkTimeList = function( itemInfoList )
             mkTimeList = function( itemInfoList ) {
 
                 var length = itemInfoList.length;
@@ -28,10 +39,13 @@
 
                 jQuery( '#timeschedule' ).listview( 'refresh' );
             },
+            // }}}
 
+            // itemInfoからアイテム一覧を作る
+            // {{{ setItem = function( itemInfo )
             setItem = function( itemInfo ) {
 
-                var hour = mkHourByPos( itemInfo.PosY, itemInfo.SizeY );
+                var hour = mkHour( itemInfo.StartTime, itemInfo.EndTime );
 
                 var divider = jQuery( '<li>' ).html( hour );
                 divider.attr( 'data-role', 'list-divider' );
@@ -39,27 +53,31 @@
 
                 jQuery( '#timeschedule' ).append( mkItem( itemInfo ) );
             },
+            // }}}
 
-            mkHourByPos = function( posY, sizeY ) {
+            // アイテムの時間の生成
+            // {{{ mkHour = function( startTimestamp, endTimestamp )
+            mkHour = function( startTimestamp, endTimestamp ) {
 
-                var startHour = Math.floor( posY / 2 ),
-                    startMin  = 30 * ( posY % 2 ),
-                    endHour   = startHour + Math.floor( sizeY / 2 ),
-                    endmin    = 30 * Math.floor( sizeY % 2 );
+                var startDate = new Date( startTimestamp ),
+                    endDate = new Date( endTimestamp );
 
-                if ( startMin == 0 ) {
+                var startHour = startDate.getHours(),
+                    startMin  = startDate.getMinutes(),
+                    endHour   = endDate.getHours(),
+                    endMin    = endDate.getMinutes();
 
-                    startMin = '00';
-                }
+                if ( startHour < 10 ) { startHour = '0' + startHour; }
+                if ( startMin < 10 )  { startMin = '0' + startMin; }
+                if ( endHour < 10 )   { endHour = '0' + endHour; }
+                if ( endMin < 10 )    { endMin = '0' + endMin; }
 
-                if ( endmin == 0 ) {
-
-                    endmin = '00';
-                }
-
-                return startHour + ':' + startMin + ' 〜 ' + endHour + ':' + endmin;
+                return ( startHour + ':' + startMin + ' 〜 ' + endHour + ':' + endMin );
             },
+            // }}}
 
+            // アイテムのdomの生成
+            // {{{ mkItem = function( itemInfo )
             mkItem = function( itemInfo ) {
 
                 var li = jQuery( '<li>' ),
@@ -68,24 +86,24 @@
 
                     head = jQuery( '<h3>' ).html( itemInfo.ItemName );
 
-                    createUser = jQuery( '<p>' ).html( '作成者：' + itemInfo.CreateUser );
-
                     comment = jQuery( '<p>' ).html( itemInfo.Comment );
 
                 setItemDialog( itemInfo );
 
                 a.attr( 'href', '#itemDialog_' + itemInfo.ItemId );
                 a.attr( 'data-rel', 'dialog' );
-                a.attr( 'data-transitio', 'pop' );
+                a.attr( 'data-transition', 'pop' );
                 a.append( head );
-                a.append( createUser );
                 a.append( comment );
 
                 li.append( a );
 
                 return li;
             },
+            // }}}
             
+            // アイテムをタップした際のダイアログを生成する
+            // {{{ setItemDialog = function( itemInfo )
             setItemDialog = function( itemInfo ) {
 
                 var dialog = jQuery( '<div>' );
@@ -109,12 +127,24 @@
                 dialog.append( content );
 
                 jQuery( 'body' ).append( dialog );
+            },
+            // }}}
+
+            // 文字列のエスケープ
+            // {{{ htmlEscape = function( string ) 
+            htmlEscape = function( string ) {
+
+                string = String( string ).replace( /&(?!\w+;)/g, '&amp;' );
+                string = String( string ).replace( /</g, '&lt;' );
+                string = String( string ).replace( />/g, '&gt;' );
+                string = String( string ).replace( /"/g, '&quot;' );
+
+                return string;
             };
+            // }}}
 
-        var eventId = jQuery( '#eventId' ).val(),
+        // --------- イベントリスナ(SOCKET) ---------
 
-            socket = io.connect( 'http://www12139ui.sakura.ne.jp:50280/detail' );
-                
         socket.on( 'connect', function() {
 
             console.log( 'connect!!!' );
@@ -132,8 +162,43 @@
             
             mkParticipateList( eventDetail.Participates );
             
-            //mkSchedule( eventDetail.Items );
             mkTimeList( eventDetail.Items );
+        } );
+
+        socket.on( 'resNewItem', function( item ) {
+
+            setItem( item );
+
+            jQuery( '#timeschedule' ).listview( 'refresh' );
+        } );
+
+        // --------- イベントリスナ ---------
+
+        jQuery( '#addItemButton' ).bind( 'tap', function() {
+
+            var title   = htmlEscape( jQuery( '#itemTitle' ).val() ),
+                comment = htmlEscape( jQuery( '#itemComment' ).val() ),
+                start   = htmlEscape( jQuery( '#itemStart' ).val() ),
+                end     = htmlEscape( jQuery( '#itemEnd' ).val() );
+
+            if ( title == '' || comment == '' || start == '' || end == '' ) {
+
+                alert( '入力に不備があります' );
+
+            } else {
+
+                var itemInfo = {
+                        eventId: eventId,
+                        itemTitle: title,
+                        itemComment: comment,
+                        itemStart: start,
+                        itemEnd: end
+                    };
+
+                socket.emit( 'reqCreateItem', itemInfo );
+
+                jQuery( '#addItem' ).dialog( 'close' );
+            }
         } );
     } );
 
