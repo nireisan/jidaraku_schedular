@@ -41,7 +41,7 @@
 
     <div data-role="content">
         <p>タイトル: <input data-bind='value: eventName, valueUpdate: "afterkeydown"' /></p>
-        <p>日時: <input data-bind='value: date' type='date' data-role="datebox" data-options='{"mode":"flipbox"}' value="" /></p>
+        <p>日時: <input type='date' data-bind='value: date' /></p>
         <a href="#eventMenu" data-role="button" data-bind="click: createEvent, visible: inputCheck" >作成</a>
     </div>
 </div><!-- /page -->
