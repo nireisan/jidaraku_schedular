@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+  <h1><%= title %></h1>
+
+<script>
+(function () {
+    var socket = io.connect('www12139ui.sakura.ne.jp/sample');
+    // イベント一覧の取得
+    socket.emit('reqEventList', '<%= user.id %>');
+    socket.on('resEventList', function( eventList) {
+        console.log(eventList);
+    });
+
+    // イベントの作成
+    var data = {
+        eventName: 'イベント1',
+        startDate : '2013/05/01',
+        user : {
+            id : '<%= user.id %>',
+            Name : '<%= user.Name %>'
+        }
+    };
+    socket.emit('reqCreateEvent', data);
+    socket.on('resCreateEvent', function( eventInfo) {
+        console.log(eventInfo);
+    });
+
+    // var socket = io.connect('www12139ui.sakura.ne.jp/detail');
+    // socket.emit('reqEventDetail', {
+    //     eventId : '51698d7731510b11bf91ea09'
+    // });
+    // 
+    // socket.on('resEventDetail', function( eventDetail) {
+    //     console.log(eventDetail);
+    // });
+})();
+</script>
+  </body>
+</html>
