@@ -1,5 +1,6 @@
 {
     "Event" : {
+        "EventId"   : 1,
         "EventName" : "第三回開発作戦会議！！！",
         "StartDate" : "1366988400000"
     },

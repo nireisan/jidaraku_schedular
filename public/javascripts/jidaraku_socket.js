@@ -4,14 +4,29 @@
 
         // ---------- 変数・定数定義 ---------
     
-        var eventId = jQuery( '#eventId' ).val(),
+        var mEventId = jQuery( '#eventId' ).val(),
 
             // イベント日のタイムスタンプ格納場所
-            eventDate = 0, 
+            mEventDate = 0, 
 
             socket = io.connect( 'http://www12139ui.sakura.ne.jp:50280/detail' ),
                 
         // --------- 関数定義 ---------
+
+            getEventId = function() {
+                
+                return mEventId;
+            },
+
+            getEventDate = function() {
+
+                return mEventDate;
+            },
+
+            setEventDate = function( timestamp ) {
+
+                mEventDate = timestamp;
+            }
 
             /** 参加者リストの作成 */
             // {{{ mkParticipateList = function( userList )
@@ -135,6 +150,33 @@
             },
             // }}}
 
+            // アイテム追加時にサーバーに渡す情報の生成
+            // {{{ mkItemInfo = function( title, comment, start, end )
+            mkItemInfo = function( title, comment, start, end ) {
+
+                var startTime = start.split( ':' ),
+                    startHour = startTime[0] * 60 * 60 * 1000,
+                    startMin  = startTime[1] * 60 * 1000,
+                    startTimestamp = getEventDate() + startHour + startMin,
+
+                    endTime = end.split( ':' ),
+                    endHour = Number( endTime[0] * 60 * 60 * 1000 ),
+                    endMin  = Number( endTime[1] * 60 * 1000 ),
+                    endTimestamp = getEventDate() + endHour + endMin,
+
+                    itemInfo = {
+                        EventId: getEventId(),
+                        UserId: 'hkitamur',
+                        ItemName: title,
+                        Comment: comment,
+                        StartTime: startTimestamp,
+                        EndTime: endTimestamp
+                    };
+
+                return itemInfo;
+            },
+            // }}}
+
             // 文字列のエスケープ
             // {{{ htmlEscape = function( string ) 
             htmlEscape = function( string ) {
@@ -156,29 +198,39 @@
         
             // 接続したらeventIdを投げる
         
-            socket.emit( 'reqEventDetail', eventId );
+            socket.emit( 'reqEventDetail', getEventId() );
         } );
         
         socket.on( 'resEventDetail', function( eventDetail ) {
         
             // eventの詳細受け取る
-            
+
             console.log( eventDetail );
             
-            mkParticipateList( eventDetail.Participates );
-            
-            mkTimeList( eventDetail.Items );
+            if ( eventDetail.IsSuccess === true ) {
 
-            eventDate = Number( eventDetail.Event.StartDate );
+                mkParticipateList( eventDetail.Participates );
+            
+                mkTimeList( eventDetail.Items );
+
+                setEventDate( Number( eventDetail.Event.StartDate ) );
+            }
         } );
 
-        socket.on( 'resNewItem', function( items ) {
+        socket.on( 'resNewItems', function( items ) {
 
             console.log( items );
 
-            mkTimeList( items );
+            if ( items.IsSuccess === true ) {
 
-            jQuery( '#timeschedule' ).listview( 'refresh' );
+                mkTimeList( items.Data );
+
+                jQuery( '#timeschedule' ).listview( 'refresh' );
+
+            } else {
+
+                alert( 'アイテムの作成に失敗しました' );
+            }
         } );
 
         // --------- イベントリスナ ---------
@@ -196,24 +248,7 @@
 
             } else {
 
-                var startTime = start.split( ':' ),
-                    startHour = startTime[0] * 60 * 60 * 1000,
-                    startMin  = startTime[1] * 60 * 1000,
-                    startTimestamp = eventDate + startHour + startMin,
-
-                    endTime = end.split( ':' ),
-                    endHour = Number( endTime[0] * 60 * 60 * 1000 ),
-                    endMin  = Number( endTime[1] * 60 * 1000 ),
-                    endTimestamp = eventDate + endHour + endMin,
-
-                    itemInfo = {
-                        EventId: eventId,
-                        UserId: 'hkitamur',
-                        ItemName: title,
-                        Comment: comment,
-                        StartTime: startTimestamp,
-                        EndTime: endTimestamp
-                    };
+                var itemInfo = mkItemInfo( title, comment, start, end );
 
                 socket.emit( 'reqCreateItem', itemInfo );
 
