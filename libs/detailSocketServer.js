@@ -2,7 +2,9 @@ var fs = require( 'fs' ),
 
     app = module.parent.exports,
     
-    io = app.get( 'io' );
+    io = app.get( 'io' ),
+
+    items = new Array();
 
 io.of( '/detail' ).on( 'connection', function ( socket ) {
 
@@ -18,30 +20,25 @@ io.of( '/detail' ).on( 'connection', function ( socket ) {
         var eventDetail = JSON.parse( fs.readFileSync( './sampledata/eventDetail.json' ) );
 
         socket.emit( 'resEventDetail', eventDetail );
+
+        items = eventDetail.Items;
     } );
 
     socket.on( 'reqCreateItem', function( itemInfo ) {
 
-        console.log( itemInfo );
+        items.push( {
+            ItemId: items.length + 1,
+            ItemName: itemInfo.ItemName,
+            StartTime: itemInfo.StartTime,
+            EndTime: itemInfo.EndTime,
+            Comment: itemInfo.Comment,
+            VoteCount: 1,
+            VoteUsers: [
+                itemInfo.UserId
+            ]
+        } );
 
-/*
-        var newItem = [{
-                ItemId: itemInfo,
-                ItemName: "new item だにぃ",
-                    PosX: 0,
-                    PosY: 33,
-                    SizeX: 3,
-                    SizeY: 5,
-                    Comment: "あたらしく作ったよー！",
-                    VoteCount: 0,
-                    VoteUsers: [
-                        'hkitamur'
-                    ]
-                }
-            ];
-
-        socket.emit( 'resNewItem', newItem );
-        socket.broadcast.emit( 'resNewItem', newItem );
-*/
+        socket.emit( 'resNewItem', items );
+        socket.broadcast.emit( 'resNewItem', items );
     } );
 } );

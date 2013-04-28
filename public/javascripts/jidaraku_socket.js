@@ -6,6 +6,9 @@
     
         var eventId = jQuery( '#eventId' ).val(),
 
+            // イベント日のタイムスタンプ格納場所
+            eventDate = 0, 
+
             socket = io.connect( 'http://www12139ui.sakura.ne.jp:50280/detail' ),
                 
         // --------- 関数定義 ---------
@@ -29,6 +32,8 @@
             /** タイムスケジュールのリストを生成する(プロト用) */
             // {{{ mkTimeList = function( itemInfoList )
             mkTimeList = function( itemInfoList ) {
+
+                jQuery( '#timeschedule' ).html( '' );
 
                 var length = itemInfoList.length;
 
@@ -163,11 +168,15 @@
             mkParticipateList( eventDetail.Participates );
             
             mkTimeList( eventDetail.Items );
+
+            eventDate = Number( eventDetail.Event.StartDate );
         } );
 
-        socket.on( 'resNewItem', function( item ) {
+        socket.on( 'resNewItem', function( items ) {
 
-            setItem( item );
+            console.log( items );
+
+            mkTimeList( items );
 
             jQuery( '#timeschedule' ).listview( 'refresh' );
         } );
@@ -187,12 +196,23 @@
 
             } else {
 
-                var itemInfo = {
-                        eventId: eventId,
-                        itemTitle: title,
-                        itemComment: comment,
-                        itemStart: start,
-                        itemEnd: end
+                var startTime = start.split( ':' ),
+                    startHour = startTime[0] * 60 * 60 * 1000,
+                    startMin  = startTime[1] * 60 * 1000,
+                    startTimestamp = eventDate + startHour + startMin,
+
+                    endTime = end.split( ':' ),
+                    endHour = Number( endTime[0] * 60 * 60 * 1000 ),
+                    endMin  = Number( endTime[1] * 60 * 1000 ),
+                    endTimestamp = eventDate + endHour + endMin,
+
+                    itemInfo = {
+                        EventId: eventId,
+                        UserId: 'hkitamur',
+                        ItemName: title,
+                        Comment: comment,
+                        StartTime: startTimestamp,
+                        EndTime: endTimestamp
                     };
 
                 socket.emit( 'reqCreateItem', itemInfo );
