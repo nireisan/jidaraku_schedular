@@ -31,10 +31,7 @@
 
     // イベント削除
     var reqDeleteEvent = function(eventId){
-        var obj = {
-                eventId: eventId
-            }
-        socket.emit('reqDeleteEvent', obj);
+        socket.emit('reqDeleteEvent', eventId);
     }
 
 
@@ -85,7 +82,6 @@
 
     // イベントリストのフォーマット
     var addEventList = function(eventName, date, id) {
-        console.log(eventName);
         var ahref = '<li id="' + id + '"><div class="ui-grid-a">'
                         + '<div class="ui-block-a" style="width: 90%;">'
                         +   '<a href="detail/?id=' + id + '">' + htmlEscape(eventName) + '</a><br />'

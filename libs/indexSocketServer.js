@@ -28,9 +28,9 @@ io.of( '/events' ).on( 'connection', function ( socket ) {
         });
     });
 
-    socket.on( 'reqDeleteEvent', function( userId ) {
-        database.getEventList(userId, null, function(eventList) {
-            socket.emit( 'resDeleteEvent', eventList);
+    socket.on( 'reqDeleteEvent', function( eventId ) {
+        database.deleteEvent(eventId, function(rtnObj) {
+            socket.emit( 'resDeleteEvent', rtnObj);
         });
     });
 });
