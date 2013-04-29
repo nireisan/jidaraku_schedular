@@ -1,6 +1,7 @@
 (function(){
     var socket = io.connect('http://www12139ui.sakura.ne.jp');
     var userId = $('#userId').val();
+    var userName = $('#userName').val();
 
     //////////////////////////////////////
     // emit
@@ -16,7 +17,8 @@
         var obj = {
                 eventName: eventName,
                 startDate: startDate,
-                userId: userId
+                userId: userId,
+                userName: userName
             }
         socket.emit('reqCreateEvent', obj);
     };
