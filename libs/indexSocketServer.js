@@ -4,8 +4,6 @@ var app = module.parent.exports,
 
 io.of( '/events' ).on( 'connection', function ( socket ) {
 
-    console.log( 'connect sample!!!' );
-
     socket.on( 'reqEventList', function( obj ) {
         database.getEventList(obj.userId, null, function(eventList) {
             socket.emit( 'resEventList', eventList);

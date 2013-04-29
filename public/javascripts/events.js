@@ -9,10 +9,7 @@
 
     // init eventList取得
     $(document).ready(function(){
-        var obj = {
-                userId: userId,
-                userName: userName
-            }
+        var obj = userId;
         socket.emit('reqEventList', obj);
     });
 
