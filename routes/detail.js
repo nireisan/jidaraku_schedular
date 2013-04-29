@@ -21,7 +21,9 @@ exports.detail = function( req, res ) {
             return ( year + '/' + month + '/' + day );
         },
 
-        setEventInfo = function( userId, eventId ) {
+        setEventInfo = function( userId, userName, eventId ) {
+
+            console.log( userId );
         
             // eventIdを指定してmongoDBからイベント情報取得
 
@@ -32,10 +34,11 @@ exports.detail = function( req, res ) {
 
             // 本来はコールバック内で実行する
             res.render( 'detail', {
-                id   : eventId,
-                user : userId,
-                title: eventInfo.EventName,
-                date : mkDate( eventInfo.StartDate )
+                id      : eventId,
+                userId  : userId,
+                userName: userName,
+                title   : eventInfo.EventName,
+                date    : mkDate( eventInfo.StartDate )
             } );
         };
 
@@ -43,13 +46,6 @@ exports.detail = function( req, res ) {
     
     ( function() {
 
-        var user = 'muhuhuhuhu';
-
-        if ( req.query.user !== undefined ) {
-
-            user = req.query.user;
-        }
-    
         if ( req.query.id === undefined ) {
             
             // IDが指定されていないのでエラー表示
@@ -60,7 +56,7 @@ exports.detail = function( req, res ) {
 
         } else {
         
-            setEventInfo( user, req.query.id );
+            setEventInfo( req.user.id, req.user.Name, req.query.id );
         }
         
     } )();

@@ -11,6 +11,7 @@
     <script src="http://code.jquery.com/mobile/1.1.0/jquery.mobile-1.1.0.min.js"></script>
     <script src="/javascripts/knockout-2.2.1.js"></script> 
 </head>
+
 <body>
 
 <input type="hidden" id="userId" value="<%= userId %>">
@@ -39,12 +40,12 @@
     </div>
 
     <div data-role="content">
-        <p>タイトル: <input type="text" data-bind='value: eventName, valueUpdate: "afterkeydown"' /></p>
-        <p>日時: <input type="text" data-bind='value: date, valueUpdate: "afterkeydown"' /></p>
-        <p>コメント: <input type="text" data-bind='value: comment, valueUpdate: "afterkeydown"' /></p>
-        <a href="#eventMenu" data-role="button" data-bind="click: createEvent" >作成</a>
+        <p>タイトル: <input data-bind='value: eventName, valueUpdate: "afterkeydown"' /></p>
+        <p>日時: <input data-bind='value: date' type='date' data-role="datebox" data-options='{"mode":"flipbox"}' value="" /></p>
+        <a href="#eventMenu" data-role="button" data-bind="click: createEvent, visible: inputCheck" >作成</a>
     </div>
 </div><!-- /page -->
+
 
 <script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/events.js"></script>
