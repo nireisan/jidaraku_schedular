@@ -9,7 +9,11 @@
 
     // init eventList取得
     $(document).ready(function(){
-        socket.emit('reqEventList', userId);
+        var obj = {
+                userId: userId,
+                userName: userName
+            }
+        socket.emit('reqEventList', obj);
     });
 
     // イベント作成送信
@@ -25,7 +29,12 @@
 
     // イベント削除
     var reqDeleteEvent = function(eventId){
-        socket.emit('reqDeleteEvent', eventId);
+        var obj = {
+                userId: userId,
+                userName: userName,
+                eventId: eventId
+            }
+        socket.emit('reqDeleteEvent', obj);
     }
 
 
