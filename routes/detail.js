@@ -21,7 +21,7 @@ exports.detail = function( req, res ) {
             return ( year + '/' + month + '/' + day );
         },
 
-        setEventInfo = function( eventId ) {
+        setEventInfo = function( userId, eventId ) {
         
             // eventIdを指定してmongoDBからイベント情報取得
 
@@ -32,15 +32,23 @@ exports.detail = function( req, res ) {
 
             // 本来はコールバック内で実行する
             res.render( 'detail', {
-                id      : eventId,
-                title   : eventInfo.EventName,
-                date    : mkDate( eventInfo.StartDate )
+                id   : eventId,
+                user : userId,
+                title: eventInfo.EventName,
+                date : mkDate( eventInfo.StartDate )
             } );
         };
 
     // --------- 処理 ---------
     
     ( function() {
+
+        var user = 'muhuhuhuhu';
+
+        if ( req.query.user !== undefined ) {
+
+            user = req.query.user;
+        }
     
         if ( req.query.id === undefined ) {
             
@@ -52,7 +60,7 @@ exports.detail = function( req, res ) {
 
         } else {
         
-            setEventInfo( req.query.id );
+            setEventInfo( user, req.query.id );
         }
         
     } )();

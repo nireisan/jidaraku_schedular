@@ -1,8 +1,6 @@
-var fs = require( 'fs' ),
-
+var fs  = require( 'fs' ),
     app = module.parent.exports,
-    
-    io = app.get( 'io' ),
+    io  = app.get( 'io' ),
 
     events = new Array(),
 
@@ -52,6 +50,100 @@ var fs = require( 'fs' ),
         events[idx].Items.push( newItemObj );
     },
 
+    getItemsByVote = function( voteInfo ) {
+
+        var eventsLen = events.length;
+
+        for ( var i = 0; i < eventsLen; i++ ) {
+
+            if ( events[i].Event.EventId == voteInfo.EventId ) {
+
+                var isSuccess = false;
+
+                if ( voteInfo.Method == 'add' ) {
+
+                    isSuccess = setUserToItem( i, voteInfo.ItemId, voteInfo.UserId );
+
+                } else {
+
+                    isSuccess = delUserToItem( i, voteInfo.ItemId, voteInfo.UserId );
+                }
+
+                if ( isSuccess == true ) {
+
+                    var items = {
+                            IsSuccess: true,
+                            Data     : events[i].Items
+                        };
+
+                    return items;
+
+                } else {
+
+                    break;
+                }
+            }
+        }
+
+        return { IsSuccess: false };
+    },
+
+    setUserToItem = function( idx, itemId, userId ) {
+
+        var itemsLen = events[idx].Items.length;
+
+        for ( var i = 0; i < itemsLen; i++ ) {
+
+            if ( events[idx].Items[i].ItemId == itemId ) {
+
+                events[idx].Items[i].VoteCount++;
+                events[idx].Items[i].VoteUsers.push( userId );
+
+                return true;
+            }
+        }
+
+        return false;
+    },
+
+    delUserToItem = function( idx, itemId, userId ) {
+
+        var itemsLen  = events[idx].Items.length,
+            isSuccess = false;
+
+        for ( var i = 0; i < itemsLen; i++ ) {
+
+            if ( events[idx].Items[i].ItemId == itemId ) {
+
+                var userLen  = events[idx].Items[i].VoteUsers.length,
+                    newUsers = new Array();
+
+                for ( var j = 0; j < userLen; j++ ) {
+
+                    if ( events[idx].Items[i].VoteUsers[j] == userId ) {
+
+                        events[idx].Items[i].VoteCount--;
+
+                        isSuccess = true;
+
+                    } else {
+
+                        newUsers.push( events[idx].Items[i].VoteUsers[j] );
+                    }
+                }
+
+                if ( isSuccess === true ) {
+
+                    events[idx].Items[i].VoteUsers = newUsers;
+                }
+
+                break;
+            }
+        }
+
+        return isSuccess;
+    },
+
     getEventDetail = function( eventId ) {
 
         var length = events.length;
@@ -93,7 +185,13 @@ io.of( '/detail' ).on( 'connection', function ( socket ) {
 
         var newItems = getNewItems( itemInfo );
 
-        console.log( newItems );
+        socket.emit( 'resNewItems', newItems );
+        socket.broadcast.emit( 'resNewItems', newItems );
+    } );
+
+    socket.on( 'reqVote', function( voteInfo ) {
+
+        var newItems = getItemsByVote( voteInfo );
 
         socket.emit( 'resNewItems', newItems );
         socket.broadcast.emit( 'resNewItems', newItems );

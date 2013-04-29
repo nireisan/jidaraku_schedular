@@ -5,6 +5,7 @@
         // ---------- 変数・定数定義 ---------
     
         var mEventId = jQuery( '#eventId' ).val(),
+            mUserId = jQuery( '#user' ).val(),
 
             // イベント日のタイムスタンプ格納場所
             mEventDate = 0, 
@@ -16,6 +17,11 @@
             getEventId = function() {
                 
                 return mEventId;
+            },
+
+            getUserId = function() {
+                
+                return mUserId;
             },
 
             getEventDate = function() {
@@ -44,11 +50,11 @@
             // }}}
             
             /** アイテムリストの作成 */
-            /** タイムスケジュールのリストを生成する(プロト用) */
             // {{{ mkTimeList = function( itemInfoList )
             mkTimeList = function( itemInfoList ) {
 
-                jQuery( '#timeschedule' ).html( '' );
+                // jQuery( '#timeschedule' ).html( '' );
+                jQuery( '#detailContent' ).html( '' );
 
                 var length = itemInfoList.length;
 
@@ -57,7 +63,7 @@
                     setItem( itemInfoList[i] );
                 }
 
-                jQuery( '#timeschedule' ).listview( 'refresh' );
+                // jQuery( '#timeschedule' ).listview( 'refresh' );
             },
             // }}}
 
@@ -65,15 +71,99 @@
             // {{{ setItem = function( itemInfo )
             setItem = function( itemInfo ) {
 
-                var hour = mkHour( itemInfo.StartTime, itemInfo.EndTime );
+                var hour = mkHour( itemInfo.StartTime, itemInfo.EndTime ),
 
-                var divider = jQuery( '<li>' ).html( hour );
-                divider.attr( 'data-role', 'list-divider' );
-                jQuery( '#timeschedule' ).append( divider );
+                    timeTitle = jQuery( '<h3>' ).html( hour ),
 
-                jQuery( '#timeschedule' ).append( mkItem( itemInfo ) );
+                    itemArea = jQuery( '<div>' ).html( timeTitle );
+
+                itemArea.attr( 'data-role', 'collapsible' );
+                itemArea.attr( 'data-theme', 'a' );
+                itemArea.attr( 'data-content-theme', 'b' );
+                itemArea.attr( 'data-collapsed', 'false' );
+
+                itemArea.append( jQuery( '<h3>' ).html( itemInfo.ItemName ) );
+                itemArea.append( jQuery( '<p>' ).html( itemInfo.Comment ) );
+
+                if ( isVoted( itemInfo.VoteUsers ) === false ) {
+
+                    itemArea.append( mkVoteButton( itemInfo.ItemId ) );
+
+                } else {
+
+                    itemArea.append( mkLeaveButton( itemInfo.ItemId ) );
+                }
+
+                itemArea.append( mkVoteUserList( itemInfo.VoteUsers ) );
+
+                jQuery( '#detailContent' ).append( itemArea ).trigger( 'create' );
             },
             // }}}
+
+            isVoted = function( voteUsers ) {
+
+                var length  = voteUsers.length;
+
+                for ( var i = 0; i < length; i++ ) {
+
+                    if ( voteUsers[i] == getUserId() ) {
+
+                        return true;
+                    }
+                }
+
+                return false;
+            },
+
+            // 参加ボタンの作成
+            mkVoteButton = function( itemId ) {
+
+                var button = jQuery( '<a>' ).html( '参加する' );
+
+                button.attr( 'data-role', 'button' );
+                button.attr( 'data-theme', 'd' );
+                button.attr( 'data-icon', 'star' );
+                button.attr( 'data-inline', 'true' );
+
+                var sendData = {
+                        Method: 'add',
+                        EventId: getEventId(),
+                        ItemId: itemId,
+                        UserId: getUserId()
+                    };
+
+                button.bind( 'tap', function() {
+
+                    socket.emit( 'reqVote', sendData );
+                } );
+
+                return button;
+            },
+
+            // 参加をやめるボタンの作成
+            mkLeaveButton = function( itemId ) {
+
+                var button = jQuery( '<a>' ).html( '参加をやめる' );
+
+                button.attr( 'data-role', 'button' );
+                button.attr( 'data-theme', 'd' );
+                button.attr( 'data-icon', 'star' );
+                button.attr( 'data-inline', 'true' );
+
+                var sendData = {
+                        Method: 'delete',
+                        EventId: getEventId(),
+                        ItemId: itemId,
+                        UserId: getUserId()
+                    };
+
+                button.bind( 'tap', function() {
+
+                    socket.emit( 'reqVote', sendData );
+                } );
+
+                return button;
+            },
 
             // アイテムの時間の生成
             // {{{ mkHour = function( startTimestamp, endTimestamp )
@@ -96,60 +186,29 @@
             },
             // }}}
 
-            // アイテムのdomの生成
-            // {{{ mkItem = function( itemInfo )
-            mkItem = function( itemInfo ) {
+            // アイテムの参加者一覧者を表示する
+            // {{{ mkVoteUserList = function( voteUsers )
+            mkVoteUserList = function( voteUsers ) {
 
-                var li = jQuery( '<li>' ),
+                var length = voteUsers.length,
 
-                    a = jQuery( '<a>' ),
+                    voteUserList = jQuery( '<div>' ).html( '<h3>参加者一覧</h5>' );
 
-                    head = jQuery( '<h3>' ).html( itemInfo.ItemName );
-
-                    comment = jQuery( '<p>' ).html( itemInfo.Comment );
-
-                setItemDialog( itemInfo );
-
-                a.attr( 'href', '#itemDialog_' + itemInfo.ItemId );
-                a.attr( 'data-rel', 'dialog' );
-                a.attr( 'data-transition', 'pop' );
-                a.append( head );
-                a.append( comment );
-
-                li.append( a );
-
-                return li;
-            },
-            // }}}
-            
-            // アイテムをタップした際のダイアログを生成する
-            // {{{ setItemDialog = function( itemInfo )
-            setItemDialog = function( itemInfo ) {
-
-                var dialog = jQuery( '<div>' );
-                dialog.attr( 'id', 'itemDialog_' + itemInfo.ItemId );
-                dialog.attr( 'data-role', 'page' );
-
-                var head = jQuery( '<div>' ).html( jQuery( '<h1>' ).html( '賛同者一覧' ) );
-                head.attr( 'data-role', 'header' );
-                dialog.append( head );
-
-                var content = jQuery( '<div>' );
-                content.attr( 'data-role', 'content' );
-
-                var length = itemInfo.VoteUsers.length;
+                voteUserList.attr( 'data-role', 'collapsible' );
+                voteUserList.attr( 'data-theme', 'e' );
+                voteUserList.attr( 'data-content-theme', 'b' );
 
                 for ( var i = 0; i < length; i++ ) {
 
-                    content.append( jQuery( '<p>' ).html( itemInfo.VoteUsers[i] ) );
+                    var user = jQuery( '<p>' ).html( voteUsers[i] );
+
+                    voteUserList.append( user );
                 }
 
-                dialog.append( content );
-
-                jQuery( 'body' ).append( dialog );
-            },
+                return voteUserList;
+            }
             // }}}
-
+            
             // アイテム追加時にサーバーに渡す情報の生成
             // {{{ mkItemInfo = function( title, comment, start, end )
             mkItemInfo = function( title, comment, start, end ) {
@@ -166,7 +225,7 @@
 
                     itemInfo = {
                         EventId: getEventId(),
-                        UserId: 'hkitamur',
+                        UserId: getUserId(),
                         ItemName: title,
                         Comment: comment,
                         StartTime: startTimestamp,
