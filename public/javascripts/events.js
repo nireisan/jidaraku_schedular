@@ -13,7 +13,12 @@
 
     // イベント作成送信
     var sendEventData = function(eventName, startDate, userId){
-        socket.emit('reqCreateEvent', eventName, startDate, userId);
+        var obj = {
+                eventName: eventName,
+                startDate: startDate,
+                userId: userId
+            }
+        socket.emit('reqCreateEvent', obj);
     };
 
     // イベント削除
